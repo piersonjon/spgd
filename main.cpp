@@ -2,7 +2,9 @@
 #include <cstdlib>
 #include <cstdio>
 #include <ctime>
+#include <string>
 
+const bool DEBUG=true;  // enable & disable as needed for testing.
 
 // the default class for any living entity in our game.
 // so far, they've got some basic stats computed with some basic formulae.
@@ -33,9 +35,15 @@ Creature::Creature() {
   res=1;
   spd=1;
   lck=1;
+  hp=(4*str)+(1.5*def);       // intentional, albeit rough conversion dbl>int
+  mp=(4*wis)+(1.5*res);       // we can funnel this properly later, although the implicit conversion should be fine.
   xp=0;
   lvl=1;
   name="character";
+  if (DEBUG) {
+    cout << "[character '" << name << "' created.]\n";
+    printf("[stats: {%i %i %i %i %i %i %i/%i %i/%i}]",str,wis,def,res,spd,lck,hp,((4*str)+(1.5*def)),mp,((4*wis)+(1.5*res)));
+  }
 }
 
 int main() {
