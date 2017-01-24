@@ -4,6 +4,7 @@
 #include <ctime>
 #include <string>
 
+using namespace std;
 const bool DEBUG=true;  // enable & disable as needed for testing.
 
 // the default class for any living entity in our game.
@@ -42,11 +43,12 @@ Creature::Creature() {
   name="character";
   if (DEBUG) {
     cout << "[character '" << name << "' created.]\n";
-    printf("[stats: {%i %i %i %i %i %i %i/%i %i/%i}]",str,wis,def,res,spd,lck,hp,((4*str)+(1.5*def)),mp,((4*wis)+(1.5*res)));
+    printf("[stats: {%i %i %i %i %i %i %i/%i %i/%i}]",str,wis,def,res,spd,lck,hp,hp,mp,mp);
   }
 }
 
 int main() {
   srand(time(NULL));  // seed for randomness at the current time.
+  Creature test;
   return 0;           // the very basics!
 }
