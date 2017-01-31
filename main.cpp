@@ -91,8 +91,11 @@ void Action::setAValue(int iVal) {
 
 // from jon to jon: move these to the readme, nerd!
 
+// rev 1/29: added sc: stun counter. every time the player should be up, but sc!=0, sc-- (skips turn, reduces stunned cool by 1).
+
 class Creature {
   int hp,chp,mp,cmp,str,wis,def,res,spd,lck,xp,lvl,sc;
+  vector<Stat> stats;
   string name;
   vector<Action> moveset;
 public:
