@@ -8,6 +8,21 @@
 using namespace std;
 const bool DEBUG=true;  // enable & disable as needed for testing.
 
+int rd() {          // rd: roll die. in the event of no args, we assume it's a d10.
+  int x = (rand()%10)+1;
+  if (DEBUG) {
+    printf("[d10: %i]\n",x);
+  }
+  return x;
+}
+int rd(int d) {     // rd: roll die. requires an int for the number of sides.
+  int x = (rand()%d)+1;
+  if (DEBUG) {
+    printf("[d%i: %i]\n",d,x);
+  }
+  return x;
+}
+
 // Class: Action
 // A move that the player wishes to execute.
 // Separated into types, extended by values.
@@ -95,14 +110,19 @@ void Action::setAValue(int iVal) {
 
 class Creature {
   int hp,chp,mp,cmp,str,wis,def,res,spd,lck,xp,lvl,sc;
-  vector<Stat> stats;
+  // vector<Stat> stats;
   string name;
   vector<Action> moveset;
 public:
   Creature();
-  Creature(int );
   int spoke(int index);
   void spush(int index, int newVal);
+  void genHero();
+  void genHero(bool m);
+  void genHero(int lvl, bool m);
+  void genUnit();
+  void genUnit(bool m);
+  void genUnit(int lvl, bool m);
 };
 
 Creature::Creature() {
@@ -185,13 +205,41 @@ void Creature::spush(int index, int newVal) {
       lvl = newVal;
   }
 }
+void Creature::genHero() {
+  int sarr[6];
+  for(int i=0;i<6;i++) {
+    int tarr[3];
+    for(int j=0;j<3;j++) {
+      tarr[j]=rd();
+    }
+    sarr[i]=tarr[0]+tarr[1]+tarr[2];
+    if (DEBUG) {
+      printf("GENHERO) [stat: %i (%i+%i+%i)]\n",sarr[i],tarr[0],tarr[1],tarr[2]);
+    }
+  }
+
+  for(int k=0;k<6;k++) {				// we need to run this as many times as we have values in our array
+  	for (int i=0;i<5;i++) {	// for every value in the array (stopping one short of the end)...
+  		if (sarr[i] < sarr[i+1]) {		// if the value is greater than the one on the right...
+        int tmp = sarr[i];
+        sarr[i] = sarr[i+1];
+        sarr[i+1] = tmp;
+      }
+    }
+  }
+
+  if (DEBUG) {
+    printf("GENHERO) [stats: %i %i %i %i %i %i]\n",sarr[0],sarr[1],sarr[2],sarr[3],sarr[4],sarr[5]);
+  }
+}
 
 int main() {
   srand(time(NULL));  // seed for randomness at the current time.
   Creature char1;
   Creature char2;
-  while ((char1.spoke(7) > 0)&&(char2.spoke(7) > 0)) {
+  char1.genHero();
+  /* while ((char1.spoke(7) > 0)&&(char2.spoke(7) > 0)) {
     //game loop!
-  }
+  } */
   return 0;           // the very basics!
 }
