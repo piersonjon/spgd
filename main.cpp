@@ -108,10 +108,42 @@ void Action::setAValue(int iVal) {
 
 // rev 1/29: added sc: stun counter. every time the player should be up, but sc!=0, sc-- (skips turn, reduces stunned cool by 1).
 
+class Stat {
+  int HP,cHP,MP,cMP,STR,WIS,DEF,RES,SPD,LCK,XP,Lvl;
+public:
+  int getCurrentHP();
+  int getMaxHP();
+  int getCurrentMP();
+  int getMaxMP();
+  int getSTR();
+  int getWIS();
+  int getDEF();
+  int getRES();
+  int getSPD();
+  int getLCK();
+  int getXP();
+  int getTotalXP();
+  int getLvl();
+
+  void setCurrentHP();
+  void setMaxHP();
+  void setCurrentMP();
+  void setMaxMP();
+  void setSTR();
+  void setWIS();
+  void setDEF();
+  void setRES();
+  void setSPD();
+  void setLCK();
+  void setXP();
+  void setLvl();
+};
+
 class Creature {
   int hp,chp,mp,cmp,str,wis,def,res,spd,lck,xp,lvl,sc;
   // vector<Stat> stats;
   string name;
+  enum Race { Dog, Cat };
   vector<Action> moveset;
 public:
   Creature();
