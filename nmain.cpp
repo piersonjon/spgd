@@ -28,6 +28,9 @@ int rd(int d) {     // rd: roll die. requires an int for the number of sides.
   return x;
 }
 
+
+
+
 ////
 // Class: Action
 // A move that the player wishes to execute.
@@ -144,3 +147,69 @@ void Stat::setSPD(int n) {SPD=n;}
 void Stat::setLCK(int n) {LCK=n;}
 void Stat::setXP(int n) {XP=n;}
 void Stat::setLvl(int n) {Lvl=n;}
+
+class Equipment {
+public:
+  Equipment();
+};
+
+class Creature {
+  Stat stats;
+public:
+  Creature();
+};
+
+class Encounter {
+public:
+  Encounter();  // character array here, i think. add character first. tweak the other way around and make the Character the integral class!
+};
+
+Encounter::Encounter() {}
+
+class Zone {
+  int id;
+  Encounter fights[3];
+  string transitions[3];
+public:
+  Zone();
+  Zone(int zid, Encounter zfights[]);
+  void addText(int id, string text);
+  void Execute();
+};
+Zone::Zone() {
+  id=-1;
+}
+Zone::Zone(int zid, Encounter zfights[3]) {id=zid; for (int i=0;i<3;i++) {fights[i]=zfights[i];}}
+void Zone::addText(int id, string text) {if (id<3||id>=0) {transitions[id]=text;}}
+void Zone::Execute() {}
+
+int main() {
+  Zone map[5];
+  for (int i=5;i<0;i--) {
+    Encounter areaMap[3];
+    Zone area(i,areaMap);
+    map[i]=area;
+  }
+  string storyText[5][3];
+  storyText[0][0] = "";
+  storyText[0][1] = "";
+  storyText[0][2] = "";
+  storyText[1][0] = "";
+  storyText[1][1] = "";
+  storyText[1][2] = "";
+  storyText[2][0] = "";
+  storyText[2][1] = "";
+  storyText[2][2] = "";
+  storyText[3][0] = "";
+  storyText[3][1] = "";
+  storyText[3][2] = "";
+  storyText[4][0] = "";
+  storyText[4][1] = "";
+  storyText[4][2] = "";
+
+  for (int j=0;j<5;j++) { for (int k=0;k<3;k++) {
+    map[j].addText(k,storyText[j][k]);
+  }}
+  printf("Build OK!");
+  return 0;
+}

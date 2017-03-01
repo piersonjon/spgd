@@ -125,18 +125,18 @@ public:
   int getTotalXP();
   int getLvl();
 
-  void setCurrentHP();
-  void setMaxHP();
-  void setCurrentMP();
-  void setMaxMP();
-  void setSTR();
-  void setWIS();
-  void setDEF();
-  void setRES();
-  void setSPD();
-  void setLCK();
-  void setXP();
-  void setLvl();
+  void setCurrentHP(int n);
+  void setMaxHP(int n);
+  void setCurrentMP(int n);
+  void setMaxMP(int n);
+  void setSTR(int n);
+  void setWIS(int n);
+  void setDEF(int n);
+  void setRES(int n);
+  void setSPD(int n);
+  void setLCK(int n);
+  void setXP(int n);
+  void setLvl(int n);
 };
 
 class Creature {
