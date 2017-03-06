@@ -149,9 +149,45 @@ void Stat::setXP(int n) {XP=n;}
 void Stat::setLvl(int n) {Lvl=n;}
 
 class Equipment {
+  string name, desc;
+  int slot;
+  Action act;
 public:
   Equipment();
+  Equipment(string iName, string iDesc, int iSlot, Action iAct);
+  string getName();
+  void setName(string iName);
+  string getDesc();
+  void setDesc(string iDesc);
+  int getSlot();
+  void setSlot(int iSlot);
+  Action getAction();
+  void setAction(Action iAct);
 };
+
+Equipment::Equipment() {
+  name = "gear";
+  desc = "geardesc";
+  slot = -1;
+  Action emptyAct;
+  act = emptyAct;
+}
+
+Equipment::Equipment(string iName, string iDesc, int iSlot, Action iAct) {
+  name = iName;
+  desc = iDesc;
+  slot = iSlot;
+  act = iAct;
+}
+
+string Equipment::getName() {return name;}
+string Equipment::getDesc() {return desc;}
+int Equipment::getSlot() {return slot;}
+Action Equipment::getAction() {return act;}
+void Equipment::setName(string iName) {name=iName;}
+void Equipment::setDesc(string iDesc) {desc=iDesc;}
+void Equipment::setSlot(int iSlot) {slot=iSlot;}
+void Equipment::setAction(int iAct) {act=iAct;}
 
 class Creature {
   Stat stats;
