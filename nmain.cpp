@@ -28,19 +28,8 @@ int rd(int d) {     // rd: roll die. requires an int for the number of sides.
   return x;
 }
 
-
-
-
 ////
 // Class: Action
-// A move that the player wishes to execute.
-// Separated into types, extended by values.
-// Get/Set: Name, Desc, Type, Value.
-// Contains default constructor.
-// Type 0: waiting move.
-// Type 1: damage move.
-// Type 2: stun move.
-// Type 3: ???
 ////
 
 class Action {
@@ -82,13 +71,14 @@ void Action::pushVal(int i, int iVal) {data[i] = iVal;}
 
 ////
 // Class: Stat
-// The array of character stats. It's easier this way!
-//
 ////
 
 class Stat {
   int HP,cHP,MP,cMP,STR,WIS,DEF,RES,SPD,LCK,XP,tXP,Lvl;
 public:
+  Stat();
+  Stat(int iSTR, int iWIS, int iDEF, int iRES, int iSPD, int iLCK, int iXP, int iLvl);
+  Stat(int iSTR, int iWIS, int iDEF, int iRES, int iSPD, int iLCK, int iXP, int iLvl, int icHP, int icMP);
   int getCurrentHP();
   int getMaxHP();
   int getCurrentMP();
@@ -116,6 +106,52 @@ public:
   void setXP(int n);
   void setLvl(int n);
 };
+
+Stat::Stat() {
+  Lvl = 1;
+  XP = 0;
+  tXP = 0;
+  STR = 1;
+  WIS = 1;
+  DEF = 1;
+  RES = 1;
+  SPD = 1;
+  LCK = 1;
+  HP = (4 * STR) + (2 * DEF);
+  cHP = HP;
+  MP = (4 * WIS) + (2 * RES);
+  cMP = MP;
+}
+Stat::Stat(int iSTR, int iWIS, int iDEF, int iRES, int iSPD, int iLCK, int iXP, int iLvl) {
+  Lvl = iLvl;
+  XP = iXP;
+  tXP = iXP;
+  STR = iSTR;
+  WIS = iWIS;
+  DEF = iDEF;
+  RES = iRES;
+  SPD = iSPD;
+  LCK = iLCK;
+  HP = (4 * STR) + (2 * DEF);
+  cHP = HP;
+  MP = (4 * WIS) + (2 * RES);
+  cMP = MP;
+}
+Stat::Stat(int iSTR, int iWIS, int iDEF, int iRES, int iSPD, int iLCK, int iXP, int iLvl, int icHP, int icMP) {
+  Lvl = iLvl;
+  XP = iXP;
+  tXP = iXP;
+  STR = iSTR;
+  WIS = iWIS;
+  DEF = iDEF;
+  RES = iRES;
+  SPD = iSPD;
+  LCK = iLCK;
+  HP = (4 * STR) + (2 * DEF);
+  cHP = icHP;
+  MP = (4 * WIS) + (2 * RES);
+  cMP = icMP;
+}
 
 int Stat::getCurrentHP() {return cHP;}
 int Stat::getMaxHP() {return HP;}
@@ -202,18 +238,85 @@ bool EquipSlot::isFilled() {return filled;}
 void EquipSlot::clear() {Equipment e;item=e;filled=false;}
 
 class Creature {
-  Stat stats;
-  EquipSlot gear[4];
+  string name;
+  bool empty;
 public:
   Creature();
+  Creature(string iName);
+  Stat stats;             // moving gear and stats to public so we can use their class methods from the Creature object.
+  EquipSlot gear[4];
+  string getName();
+  void setName(string iName);
+  Stat getStats();
+  void setStats(Stat iStats);
+  Equipment getGear (int slot);
+  void setGear (int slot, Equipment iEquip);
+  void emptyCreature();
+  bool isEmpty();
 };
 
+Creature::Creature() {name="Empty";empty=true;}
+Creature::Creature(string iName) {name=iName;empty=false;}
+string Creature::getName() {return name;}
+void Creature::setName(string iName) {name = iName;}
+Stat Creature::getStats() {return stats;}
+void Creature::setStats(Stat iStats) {stats = iStats;}
+Equipment Creature::getGear(int slot) {
+  if (slot<1||slot>4) {
+    if (DEBUG) {printf("DEBUG: cannot get gear for invalid slot %i\n",slot);}
+  }
+  else {
+    return gear[slot].getItem();
+  }
+}
+void Creature::setGear(int slot, Equipment iEquip) {
+  if (slot<1||slot>4) {
+    if (DEBUG) {printf("DEBUG: cannot set gear for invalid slot %i\n",slot);}
+  }
+  else {
+    gear[slot].setItem(iEquip);
+  }
+}
+void Creature::emptyCreature() {name="Empty";empty=true;}
+bool Creature::isEmpty() {return empty;}
+
 class Encounter {
+  Creature playerTeam[4];
+  Creature enemyTeam[4];
 public:
   Encounter();  // character array here, i think. add character first. tweak the other way around and make the Character the integral class!
+  Creature addChar(bool playerTeam, Creature iChar);
+  void rotate(bool team, int slot1, int slot2);
+  void begin();
 };
 
 Encounter::Encounter() {}
+Creature Encounter::addChar(bool isPlayerTeam, Creature iChar) {
+  for (int i=0;i<4;i++) {
+    if (i<3) {
+      if (isPlayerTeam) {
+        if (playerTeam[i].isEmpty()) {
+          playerTeam[i] = iChar;
+        }}
+      else {
+        if (enemyTeam[i].isEmpty()) {
+          enemyTeam[i] = iChar;
+        }}}
+    else {
+      if (isPlayerTeam) {
+        if (playerTeam[i].isEmpty()) {
+          playerTeam[i] = iChar;
+        }
+        else {
+          if (DEBUG) {printf("DEBUG: player's team is too full to accept a new member\n");}
+        }}
+      else {
+        if (enemyTeam[i].isEmpty()) {
+          enemyTeam[i] = iChar;
+        }
+        else {
+          if (DEBUG) {printf("DEBUG: enemy's team is too full to accept a new member\n");}
+        }}}}}
 
 class Zone {
   int id;
@@ -276,8 +379,15 @@ int main() {
   testHelmAction.pushVal(0,10);
   Equipment testHelm("Shining Sallet","A polished helmet worn to guard the head and neck.",3,testHelmAction);
 
+  Stat testStats(10,5,7,4,8,9,0,1);
+  //
+  Creature demo("testguy");
+  demo.stats = testStats;
+  demo.gear[0].setItem(testSword);
+  demo.gear[1].setItem(testArmor);
+  demo.gear[2].setItem(testCharm);
+  demo.gear[3].setItem(testHelm);
+
   printf("Build OK!");
   return 0;
 }
-
-honk
