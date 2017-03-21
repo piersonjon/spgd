@@ -280,6 +280,17 @@ void Creature::setGear(int slot, Equipment iEquip) {
 void Creature::emptyCreature() {name="Empty";empty=true;}
 bool Creature::isEmpty() {return empty;}
 
+class Turn {
+  std::vector<Action> preActions;
+  std::vector<Action> mainActions;
+  std::vector<Action> postActions;
+public:
+  std::vector<Action> getActions();
+  void runPre();
+  void runMain();
+  void runPost();
+};
+
 class Encounter {
   Creature playerTeam[4];
   Creature enemyTeam[4];
@@ -380,7 +391,7 @@ int main() {
   Equipment testHelm("Shining Sallet","A polished helmet worn to guard the head and neck.",3,testHelmAction);
 
   Stat testStats(10,5,7,4,8,9,0,1);
-  //
+  
   Creature demo("testguy");
   demo.stats = testStats;
   demo.gear[0].setItem(testSword);
