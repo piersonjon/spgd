@@ -237,9 +237,19 @@ void EquipSlot::setItem(Equipment i) {item=i;filled=true;}
 bool EquipSlot::isFilled() {return filled;}
 void EquipSlot::clear() {Equipment e;item=e;filled=false;}
 
+// the debate for the ages:
+// do we try to implement the game state in
+
+class Agent {
+  int type;
+  vector<Action> getValidMoves();
+
+
+};
+
 class Creature {
   string name;
-  bool empty;
+  bool empty,isPlayer;
 public:
   Creature();
   Creature(string iName);
@@ -253,6 +263,7 @@ public:
   void setGear (int slot, Equipment iEquip);
   void emptyCreature();
   bool isEmpty();
+  bool isHuman();
 };
 
 Creature::Creature() {name="Empty";empty=true;}
@@ -279,13 +290,14 @@ void Creature::setGear(int slot, Equipment iEquip) {
 }
 void Creature::emptyCreature() {name="Empty";empty=true;}
 bool Creature::isEmpty() {return empty;}
+bool Creature::isHuman() {return isPlayer;}
 
 class Turn {
-  std::vector<Action> preActions;
-  std::vector<Action> mainActions;
-  std::vector<Action> postActions;
+  vector<Action> preActions;
+  vector<Action> mainActions;
+  vector<Action> postActions;
 public:
-  std::vector<Action> getActions();
+  vector<Action> getActions();
   void runPre();
   void runMain();
   void runPost();
@@ -391,7 +403,7 @@ int main() {
   Equipment testHelm("Shining Sallet","A polished helmet worn to guard the head and neck.",3,testHelmAction);
 
   Stat testStats(10,5,7,4,8,9,0,1);
-  
+
   Creature demo("testguy");
   demo.stats = testStats;
   demo.gear[0].setItem(testSword);

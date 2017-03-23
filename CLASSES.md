@@ -18,3 +18,4 @@ A class that handles the preemptive, main, and end phase actions that happen whe
 
 ## Action
 The class that defines an action to be taken. A result of equipped items.
+One is also granted to you as a
