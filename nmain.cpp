@@ -18,16 +18,34 @@ const bool DEBUG=true;  // enable & disable as needed for testing.
 int rd() {          // rd: roll die. in the event of no args, we assume it's a d10.
   int x = (rand()%10)+1;
   if (DEBUG) {
-    printf("[d10: %i]\n",x);
+    printf("RD) [d10: %i]\n",x);
   }
   return x;
 }
 int rd(int d) {     // rd: roll die. requires an int for the number of sides.
   int x = (rand()%d)+1;
   if (DEBUG) {
-    printf("[d%i: %i]\n",d,x);
+    printf("RDX) [d%i: %i]\n",d,x);
   }
   return x;
+}
+
+int getVal() {
+  int iVal = 0;
+  cin >> iVal;
+  if(!cin)
+  {
+      cin.clear();
+      cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        if (DEBUG) {printf("GETVAL) BAD INPUT\n");
+      }
+  }
+  else {
+    if (DEBUG) {
+      printf("GETVAL) INPUT OK\n");
+    }
+  }
+  return iVal;
 }
 
 ////
@@ -259,6 +277,7 @@ public:
   void emptyCreature();
   bool isEmpty();
   bool isHuman();
+  void generate(bool isPlayer);
 };
 
 Creature::Creature() {name="Empty";empty=true;}
@@ -269,7 +288,7 @@ Stat Creature::getStats() {return stats;}
 void Creature::setStats(Stat iStats) {stats = iStats;}
 Equipment Creature::getGear(int slot) {
   if (slot<1||slot>4) {
-    if (DEBUG) {printf("DEBUG: cannot get gear for invalid slot %i\n",slot);}
+    if (DEBUG) {printf("SETGEAR) cannot get gear for invalid slot %i\n",slot);}
   }
   else {
     return gear[slot].getItem();
@@ -277,7 +296,7 @@ Equipment Creature::getGear(int slot) {
 }
 void Creature::setGear(int slot, Equipment iEquip) {
   if (slot<1||slot>4) {
-    if (DEBUG) {printf("DEBUG: cannot set gear for invalid slot %i\n",slot);}
+    if (DEBUG) {printf("SETGEAR) cannot set gear for invalid slot %i\n",slot);}
   }
   else {
     gear[slot].setItem(iEquip);
@@ -286,6 +305,127 @@ void Creature::setGear(int slot, Equipment iEquip) {
 void Creature::emptyCreature() {name="Empty";empty=true;}
 bool Creature::isEmpty() {return empty;}
 bool Creature::isHuman() {return isPlayer;}
+void Creature::generate(bool isPlayer) {
+  int tmp = 0;
+  string tmpName = "";
+  bool filled[] = {false,false,false,false,false,false};
+  bool dieUsed[] = {false,false,false,false,false,false};
+  string statNames[] = {"Strength","Wisdom","Defense","Resistance","Speed","Luck"};
+  printf("Every good hero needs a name.\nWhat shall we call this hero? ");
+  cin >> tmpName;
+  cout << "Very well- this hero shall be known as " << tmpName << ".\n\n";
+  printf("Combat in CROWNS is split into two kinds: physical and magical.\n");
+  printf("Creatures with higher STRength deal more physical damage.\n");
+  printf("Creatures with higher WISdom deal more magical damage.\n");
+  printf("Creatures with higher DEFense resist more physical damage.\n");
+  printf("Creatures with higher RESistance deal more magical damage.\n");
+  printf("Creatures with higher SPeeD act more frequently.\n");
+  printf("Creatures with higher LuCK simply have the side of fortune.\n");
+  printf("Think carefully about the person you would like to become.\n\n");
+  printf("Now, you will look at your stat numbers and decide what your strentghs and weaknesses are.\nAn average stat is 16 and the maximum stat is 30.\n");
+  int dice[7];
+  for (int i=0;i<7;i++) {
+    dice[i] = rd() + rd() + rd();
+  }
+  for(int k=0;k<7;k++) {				// we need to run this as many times as we have values in our array
+  	for (int i=0;i<6;i++) {	// for every value in the array (stopping one short of the end)...
+  		if (dice[i] < dice[i+1]) {		// if the value is greater than the one on the right...
+        int tmp = dice[i];
+        dice[i] = dice[i+1];
+        dice[i+1] = tmp;
+      }
+    }
+  }
+
+  if (DEBUG) {
+    printf("GENERATE) [stats: %i %i %i %i %i %i]\n",dice[0],dice[1],dice[2],dice[3],dice[4],dice[5]);
+  }
+  printf("Here are your stats:\n");
+  for(int i=0;i<6;i++) {
+    if (!dieUsed[i]) {
+      printf("[%i] ",dice[i]);
+    }
+  }
+  printf("\n");
+  for(int i=0;i<6;i++) {
+    printf("Please pick a stat to assign [%i] to.\n1) Strength\n2) Wisdom\n3) Defense\n4) Resistance\n5) Speed\n6) Luck\n\nWhat is your choice? ",dice[i]);
+    tmp = -1;
+    tmp = getVal();
+    if (tmp>0&tmp<7) {    // consider rewriting this entire area for efficiency later on, this is bad to look at nevermind to run
+      switch(tmp) {
+        case 1:
+          if (dieUsed[tmp]) {
+            printf("You've already assigned [%i] to that stat.\n",stats.getSTR());
+            i--;
+          }
+          else {
+            dieUsed[tmp] = true;
+            stats.setSTR(tmp);
+          }
+          break;
+        case 2:
+          if (dieUsed[tmp]) {
+            printf("You've already assigned [%i] to that stat.\n",stats.getWIS());
+            i--;
+          }
+          else {
+            dieUsed[tmp] = true;
+            stats.setWIS(tmp);
+          }
+          break;
+        case 3:
+          if (dieUsed[tmp]) {
+            printf("You've already assigned [%i] to that stat.\n",stats.getDEF());
+            i--;
+          }
+          else {
+            dieUsed[tmp] = true;
+            stats.setDEF(tmp);
+          }
+          break;
+        case 4:
+          if (dieUsed[tmp]) {
+            printf("You've already assigned [%i] to that stat.\n",stats.getRES());
+            i--;
+          }
+          else {
+            dieUsed[tmp] = true;
+            stats.setRES(tmp);
+          }
+          break;
+        case 5:
+          if (dieUsed[tmp]) {
+            printf("You've already assigned [%i] to that stat.\n",stats.getSPD());
+            i--;
+          }
+          else {
+            dieUsed[tmp] = true;
+            stats.setSPD(tmp);
+          }
+          break;
+        case 6:
+          if (dieUsed[tmp]) {
+            printf("You've already assigned [%i] to that stat.\n",stats.getLCK());
+            i--;
+          }
+          else {
+            dieUsed[tmp] = true;
+            stats.setLCK(tmp);
+          }
+          break;
+        default:
+          for(;;) {printf("huh?");}
+          break;
+      }
+    }
+    else {printf("That's not a valid option to choose.\n");i--;}
+  }
+
+  stats.setMaxHP((2*stats.getDEF()) + (4*stats.getSTR()));
+  stats.setCurrentHP(stats.getMaxHP());
+  stats.setMaxMP((2*stats.getRES()) + (4*stats.getWIS()));
+  stats.setCurrentMP(stats.getMaxMP());
+}
 
 class Turn {
   vector<Action> preActions;
@@ -355,6 +495,7 @@ void Zone::Execute() {}
 
 int main() {
   printf("Build OK!\n");
+  srand(time(NULL));          // allows RTC to create random data
   Zone map[5];
   for (int i=5;i<0;i--) {
     Encounter areaMap[3];
@@ -410,29 +551,20 @@ int main() {
 
 
   printf("   C R O W N S\n");
-  printf("  Build 3/29/17  \n\n");
+  printf("  Build 3/31/17  \n\n");
   int chooseVal;
   string istream;
   bool mmLoop = true;
   while(mmLoop) {
     printf("Main menu:\n1) New Game\n2) About\n3) Exit\n\n");
     printf("Please select an option. ");
-    cin >> chooseVal;
-    if(!cin) // or if(cin.fail())
-    {
-        // user didn't input a number
-        cin.clear(); // reset failbit
-        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-          if (DEBUG) {printf("BAD INPUT\n");}
-        // next, request user reinput
-    }
-    else {  if (DEBUG) {printf("INPUT OK\n");}}
+    chooseVal = getVal();
     switch(chooseVal) {
       case 1:
       mmLoop = false;
       break;
       case 2:
-      printf("\n(THE ABOUT TEXT SHOULD PROBABLY BE HERE. IN THE EVENT THAT THERE'S NO ABOUT TEXT HERE TELLING YOU WHAT THE FUCK THIS GAME IS, CONTACT JON PIERSON AT ADMIN@KINIX.NET)\n\n");
+      printf("\n(THE ABOUT TEXT SHOULD PROBABLY BE HERE. IN THE EVENT THAT THERE'S NO ABOUT TEXT HERE TELLING YOU WHAT THE FUCK THIS GAME IS, CONTACT JON PIERSON AT ADMIN@KINIX.NET AND LET HIM KNOW HE GOTTA FINISH THIS ISH)\n\n");
       break;
       case 3:
       return 0;
@@ -443,5 +575,6 @@ int main() {
     }
   }
   printf("GAMELOOP\n");
+  demo.generate(true);
   return 0;
 }
