@@ -5,6 +5,8 @@
 #include <ctime>
 #include <string>
 #include <vector>
+#include <ios>
+#include <limits>
 
 using namespace std;
 const bool DEBUG=true;  // enable & disable as needed for testing.
@@ -34,38 +36,31 @@ int rd(int d) {     // rd: roll die. requires an int for the number of sides.
 
 class Action {
   string name,desc;
-  int type;
   int data[10];
 public:
   string getAName();
   void setAName(string iName);
   string getADesc();
   void setADesc(string iDesc);
-  int getType();
-  void setType(int iType);
   int pullVal(int i);
   void pushVal(int i, int iVal);
   Action();
-  Action(string iName, string iDesc, int iType);
+  Action(string iName, string iDesc);
 };
 
 Action::Action() {
   name = "None";
   desc = "N/A";
-  type = -1;
   for (int i=0;i<10;i++) {data[i]=0;}
 }
-Action::Action(string iName, string iDesc, int iType) {
+Action::Action(string iName, string iDesc) {
   name = iName;
   desc = iDesc;
-  type = iType;
 }
 string Action::getAName() {return name;}
 void Action::setAName(string iName) {name = iName;}
 string Action::getADesc() {return desc;}
 void Action::setADesc(string iDesc) {desc = iDesc;}
-int Action::getType() {return type;}
-void Action::setType(int iType) {type = iType;}
 int Action::pullVal(int i) {return data[i];}
 void Action::pushVal(int i, int iVal) {data[i] = iVal;}
 
@@ -359,6 +354,7 @@ void Zone::addText(int id, string text) {if (id<3||id>=0) {transitions[id]=text;
 void Zone::Execute() {}
 
 int main() {
+  printf("Build OK!\n");
   Zone map[5];
   for (int i=5;i<0;i--) {
     Encounter areaMap[3];
@@ -386,19 +382,19 @@ int main() {
     map[j].addText(k,storyText[j][k]);
   }}
 
-  Action testSwordAction("Mighty Swing","A powerful overhead swing meant to smash your opponent.",0);
+  Action testSwordAction("Mighty Swing","A powerful overhead swing meant to smash your opponent.");
   testSwordAction.pushVal(0,25);
   Equipment testSword("Golden Greatblade","A gleaming sword held by only the mightiest of men.",1,testSwordAction);
 
-  Action testArmorAction("Goldlight Aura","Reduces the damage taken by the wearer.",1);
+  Action testArmorAction("Goldlight Aura","Reduces the damage taken by the wearer.");
   testArmorAction.pushVal(0,10);
   Equipment testArmor("Crest of the Goldheart","Brilliant white and blue cloth draping chainmail.",2,testArmorAction);
 
-  Action testCharmAction("Golden Touch","The ring allows the wearer to heal an ally slightly.",2);
+  Action testCharmAction("Golden Touch","The ring allows the wearer to heal an ally slightly.");
   testCharmAction.pushVal(0,15);
   Equipment testCharm("Ring of the Golden Waves","A heavy ring stamped with the sigil of the king.",4,testCharmAction);
 
-  Action testHelmAction("Gleam","The helmet is so polished, the light shining off can cause an enemy to miss.",10);
+  Action testHelmAction("Gleam","The helmet is so polished, the light shining off can cause an enemy to miss.");
   testHelmAction.pushVal(0,10);
   Equipment testHelm("Shining Sallet","A polished helmet worn to guard the head and neck.",3,testHelmAction);
 
@@ -411,6 +407,41 @@ int main() {
   demo.gear[2].setItem(testCharm);
   demo.gear[3].setItem(testHelm);
 
-  printf("Build OK!");
+
+
+  printf("   C R O W N S\n");
+  printf("  Build 3/29/17  \n\n");
+  int chooseVal;
+  string istream;
+  bool mmLoop = true;
+  while(mmLoop) {
+    printf("Main menu:\n1) New Game\n2) About\n3) Exit\n\n");
+    printf("Please select an option. ");
+    cin >> chooseVal;
+    if(!cin) // or if(cin.fail())
+    {
+        // user didn't input a number
+        cin.clear(); // reset failbit
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+          if (DEBUG) {printf("BAD INPUT\n");}
+        // next, request user reinput
+    }
+    else {  if (DEBUG) {printf("INPUT OK\n");}}
+    switch(chooseVal) {
+      case 1:
+      mmLoop = false;
+      break;
+      case 2:
+      printf("\n(THE ABOUT TEXT SHOULD PROBABLY BE HERE. IN THE EVENT THAT THERE'S NO ABOUT TEXT HERE TELLING YOU WHAT THE FUCK THIS GAME IS, CONTACT JON PIERSON AT ADMIN@KINIX.NET)\n\n");
+      break;
+      case 3:
+      return 0;
+      break;
+      default:
+      if (DEBUG) {printf("VALUE OOB\n\n");}
+      break;
+    }
+  }
+  printf("GAMELOOP\n");
   return 0;
 }
