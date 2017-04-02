@@ -338,7 +338,7 @@ void Creature::generate(bool isPlayer) {
   }
 
   if (DEBUG) {
-    printf("GENERATE) [stats: %i %i %i %i %i %i]\n",dice[0],dice[1],dice[2],dice[3],dice[4],dice[5]);
+    printf("GENERATE) [stats: %i %i %i %i %i %i], drop %i\n",dice[0],dice[1],dice[2],dice[3],dice[4],dice[5],dice[6]);
   }
   printf("Here are your stats:\n");
   for(int i=0;i<6;i++) {
@@ -360,7 +360,7 @@ void Creature::generate(bool isPlayer) {
           }
           else {
             dieUsed[tmp] = true;
-            stats.setSTR(tmp);
+            stats.setSTR(dice[i]);
           }
           break;
         case 2:
@@ -370,7 +370,7 @@ void Creature::generate(bool isPlayer) {
           }
           else {
             dieUsed[tmp] = true;
-            stats.setWIS(tmp);
+            stats.setWIS(dice[i]);
           }
           break;
         case 3:
@@ -380,7 +380,7 @@ void Creature::generate(bool isPlayer) {
           }
           else {
             dieUsed[tmp] = true;
-            stats.setDEF(tmp);
+            stats.setDEF(dice[i]);
           }
           break;
         case 4:
@@ -390,7 +390,7 @@ void Creature::generate(bool isPlayer) {
           }
           else {
             dieUsed[tmp] = true;
-            stats.setRES(tmp);
+            stats.setRES(dice[i]);
           }
           break;
         case 5:
@@ -400,7 +400,7 @@ void Creature::generate(bool isPlayer) {
           }
           else {
             dieUsed[tmp] = true;
-            stats.setSPD(tmp);
+            stats.setSPD(dice[i]);
           }
           break;
         case 6:
@@ -410,7 +410,7 @@ void Creature::generate(bool isPlayer) {
           }
           else {
             dieUsed[tmp] = true;
-            stats.setLCK(tmp);
+            stats.setLCK(dice[i]);
           }
           break;
         default:
