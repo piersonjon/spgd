@@ -421,6 +421,20 @@ void Creature::generate(bool isPlayer) {
     else {printf("That's not a valid option to choose.\n");i--;}
   }
 
+  printf("\nVery good. Now all that's left is to choose your starting gear.\nFirst comes your weapon.\n\n");
+  printf("1) A sword, designed for the strong.\n2) A wand, designed for the wise.\n\nWhat will you choose? ");
+  tmp = -1;
+  tmp = getVal();
+  switch(tmp) {
+    case 1:
+    Equipment startWep;
+    break;
+    case 2:
+    break;
+    default:
+    break;
+  }
+
   stats.setMaxHP((2*stats.getDEF()) + (4*stats.getSTR()));
   stats.setCurrentHP(stats.getMaxHP());
   stats.setMaxMP((2*stats.getRES()) + (4*stats.getWIS()));
@@ -564,7 +578,7 @@ int main() {
       mmLoop = false;
       break;
       case 2:
-      printf("\n(THE ABOUT TEXT SHOULD PROBABLY BE HERE. IN THE EVENT THAT THERE'S NO ABOUT TEXT HERE TELLING YOU WHAT THE FUCK THIS GAME IS, CONTACT JON PIERSON AT ADMIN@KINIX.NET AND LET HIM KNOW HE GOTTA FINISH THIS ISH)\n\n");
+      printf("\nCROWNS is a game about a single hero aspiring to sieze control of the kingdom! More to follow.\n\n");
       break;
       case 3:
       return 0;
