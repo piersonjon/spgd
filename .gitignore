@@ -1,3 +1,4 @@
 *.exe
 *.bat
 *.exe.stackdump
+compiling_error.txt
