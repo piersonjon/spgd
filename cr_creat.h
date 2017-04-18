@@ -39,6 +39,7 @@ public:
   bool isEmpty();
   bool isHuman();
   void generate(bool isPlayer);
+  vector<Action> getValidActions();
 };
 
 Creature::Creature() {name="Empty";empty=true;}
@@ -196,6 +197,16 @@ void Creature::generate(bool isPlayer) {
   stats.setCurrentHP(stats.getMaxHP());
   stats.setMaxMP((2*stats.getRES()) + (4*stats.getWIS()));
   stats.setCurrentMP(stats.getMaxMP());
+}
+
+vector<Action> Creature::getValidActions() {
+  vector<Action> goodMoves;
+  for (int i=0;i<4;i++) {
+    if (gear[i].isFilled()) {
+      if (gear[i].getItem().getAction().pullVal(1) > stats.getCurrentMP())
+      goodMoves.push_back(gear[i].getItem().getAction());
+    }
+  }
 }
 
 #endif

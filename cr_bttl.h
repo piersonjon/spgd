@@ -20,68 +20,53 @@ using namespace std;
 ///////////////////////////////////////////////////
 // class: Turn
 class Turn {
-  vector<Action> preActions;
-  vector<Action> mainActions;
-  vector<Action> postActions;
+
 public:
-  vector<Action> getActions();
-  void runPre();
-  void runMain();
-  void runPost();
+  Turn (Character actor, Character target);
 };
 
-///////////////////////////////////////////////////
-// class: Encounter
-class Encounter {
-  Creature playerTeam[4];
-  Creature enemyTeam[4];
-public:
-  Encounter();  // character array here, i think. add character first. tweak the other way around and make the Character the integral class!
-  Creature addChar(bool playerTeam, Creature iChar);
-  void rotate(bool team, int slot1, int slot2);
-  void begin();
-};
-
-Encounter::Encounter() {}
-Creature Encounter::addChar(bool isPlayerTeam, Creature iChar) {
-  for (int i=0;i<4;i++) {
-    if (i<3) {
-      if (isPlayerTeam) {
-        if (playerTeam[i].isEmpty()) {
-          playerTeam[i] = iChar;
-        }
-      }
-      else {
-        if (enemyTeam[i].isEmpty()) {
-          enemyTeam[i] = iChar;
-        }
-      }
-    }
-    else {
-      if (isPlayerTeam) {
-        if (playerTeam[i].isEmpty()) {
-          playerTeam[i] = iChar;
-        }
-        else {
-          if (DEBUG) {printf("DEBUG: player's team is too full to accept a new member\n");}
-        }
-      }
-      else {
-        if (enemyTeam[i].isEmpty()) {
-          enemyTeam[i] = iChar;
-        }
-        else {
-          if (DEBUG) {printf("DEBUG: enemy's team is too full to accept a new member\n");}
-        }
-      }
-    }
+Turn::Turn(Character actor, Character target) {
+  if (actor.isPlayer()) {
+    //get list of moves and display them, prompting the user for a choice.
   }
 }
 
 ///////////////////////////////////////////////////
-// class:
+// class: Encounter
+class Encounter {
+  Creature player;
+  Creatuyre enemy;
+public:
+  Encounter(Creature plr, Creature nmy);
+  Creature Battle();
+};
 
-///////////////////////////////////////////////////
-// class:
+Encounter::Encounter(Creature plr, Creature nmy) {
+  player = plr;
+  enemy = nmy;
+}
+
+Creature Encounter::Battle() {
+  cout << "Battle between " << player.getName() << " and " << enemy.getName() << " has begun!\n";
+  while (player.getCurrentHP() > 0 || enemy.getCurrentHP() > 0) {
+    if (player.getSPD() > enemy.getSPD()) {
+      Turn (player, enemy);
+      Turn (enemy, player);
+    }
+    else {
+      Turn (enemy, player);
+      Turn (player, enemy);
+    }
+
+  }
+  if (player.getCurrentHP() <= 0) {
+    cout << player.getName() << " has perished in combat! "
+    return enemy;
+  }
+  else {
+    cout << enemy.getName() << " has perished in combat! "
+    return player;
+  }
+}
 
 #endif

@@ -47,7 +47,7 @@ int main() {
   demo.gear[3].setItem(testHelm);
 
   printf("   C R O W N S\n");
-  printf("  Build 3/31/17  \n\n");
+  printf("  Build 4/19/17  \n\n");
   int chooseVal;
   string istream;
   bool mmLoop = true;
@@ -72,5 +72,8 @@ int main() {
   }
   printf("GAMELOOP\n");
   demo.generate(true);
+  //setup enemy for encounter 1
+  //begin fight with player and enemy 1
+  //if we return the living player, then move onto encounter 2. otherwise, just break.
   return 0;
 }
