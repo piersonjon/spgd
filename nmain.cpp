@@ -19,34 +19,8 @@ const bool DEBUG=false;  // enable & disable as needed for testing.
 
 int main() {
   CRM dbg;
-  printf("Build OK!\n");
+  //printf("Build OK!\n");
   srand(time(NULL));          // allows RTC to create random data
-
-  Action testSwordAction("Mighty Swing","A powerful overhead swing meant to smash your opponent.");
-  testSwordAction.pushVal(0,25);
-  Equipment testSword("Golden Greatblade","A gleaming sword held by only the mightiest of men.",1,testSwordAction);
-
-  Action testArmorAction("Goldlight Aura","Reduces the damage taken by the wearer.");
-  testArmorAction.pushVal(0,10);
-  Equipment testArmor("Crest of the Goldheart","Brilliant white and blue cloth draping chainmail.",2,testArmorAction);
-
-  Action testCharmAction("Golden Touch","The ring allows the wearer to heal an ally slightly.");
-  testCharmAction.pushVal(0,15);
-  Equipment testCharm("Ring of the Golden Waves","A heavy ring stamped with the sigil of the king.",4,testCharmAction);
-
-  Action testHelmAction("Gleam","The helmet is so polished, the light shining off can cause an enemy to miss.");
-  testHelmAction.pushVal(0,10);
-  Equipment testHelm("Shining Sallet","A polished helmet worn to guard the head and neck.",3,testHelmAction);
-
-  Stat testStats(10,5,7,4,8,9,0,1);
-
-  Creature demo("testguy");
-  demo.stats = testStats;
-  demo.gear[0].setItem(testSword);
-  demo.gear[1].setItem(testArmor);
-  demo.gear[2].setItem(testCharm);
-  demo.gear[3].setItem(testHelm);
-
   printf("   C R O W N S\n");
   printf("  Build 4/19/17  \n\n");
   int chooseVal;
@@ -71,14 +45,27 @@ int main() {
       break;
     }
   }
-  printf("GAMELOOP\n");
-  demo.generate(true);
+  //printf("GAMELOOP\n");
+  Creature player;
+  player.generate();
+
+  player.setHuman(true);
   //setup enemy for encounter 1
   //begin fight with player and enemy 1
   //if we return the living player, then move onto encounter 2. otherwise, just break
   Creature enemy1("Good Knight");
-  demo.setHuman(true);
-  Encounter enc1(demo,enemy1);
+  Encounter enc1(player,enemy1);
   Creature winner = enc1.Battle();
+  if (winner.isHuman()) {
+    Encounter enc2(player,enemy1);
+    Creature winner2 = enc2.Battle();
+    if (winner2.isHuman()) {
+      cout << "Congratulations, " << winner2.getName() << "! You have claimed the crown for your own!\n\n";
+    }
+  }
+  else {
+    printf("You were not strong enough to sieze the crown.\n\n");
+  }
+
   return 0;
 }

@@ -39,9 +39,9 @@ public:
   bool isEmpty();
   bool isHuman();
   void setHuman(bool tru);
-  void generate(bool isPlayer);
+  void generate();
   void statBot(bool melee);
-  vector<Action> getValidActions();
+  void getValidActions(vector<Action> ml);
 };
 
 Creature::Creature() {name="Empty";empty=true;}
@@ -111,7 +111,7 @@ void Creature::statBot(bool melee) {
   }
 }
 
-void Creature::generate(bool isPlayer) {
+void Creature::generate() {
   int tmp = 0;
   string tmpName = "";
   bool filled[] = {false,false,false,false,false,false};
@@ -120,6 +120,7 @@ void Creature::generate(bool isPlayer) {
   printf("Every good hero needs a name.\nWhat shall we call this hero? ");
   cin >> tmpName;
   cout << "Very well- this hero shall be known as " << tmpName << ".\n\n";
+  name = tmpName;
   printf("Combat in CROWNS is split into two kinds: physical and magical.\n");
   printf("Creatures with higher STRength deal more physical damage.\n");
   printf("Creatures with higher WISdom deal more magical damage.\n");
@@ -231,35 +232,44 @@ void Creature::generate(bool isPlayer) {
   printf("1) A sword, designed for the strong.\n2) A wand, designed for the wise.\n\nWhat will you choose? ");
   tmp = -1;
   tmp = tools.getVal();
+  Equipment startWep;
+  Action startAct;
   switch(tmp) {
     case 1:
-    Equipment startWep;
+      startWep.setName("Shining Steel Sword");
+      startWep.setDesc("A mighty, double-edged sword that shines in the daylight.");
+      startWep.setSlot(1);
+      startAct.setAName("Shining Swing");
+      startAct.setADesc("THe wielder swings the sword with ferocity.");
     case 2:
-    Equipment startWep;
+      startWep.setName("Wooden Crystal Staff");
+      startWep.setDesc("A slender, elegant greatstaff topped with a crystal radiating power.");
+      startWep.setSlot(1);
+      startAct.setAName("Mana Bolt");
+      startAct.setADesc("The user blasts the enemy with a bolt of pure Mana.");
     break;
   }
-  printf("DEBUG LINE 1\n");
-
   stats.setMaxHP((2*stats.getDEF()) + (4*stats.getSTR()));
   stats.setCurrentHP(stats.getMaxHP());
   stats.setMaxMP((2*stats.getRES()) + (4*stats.getWIS()));
   stats.setCurrentMP(stats.getMaxMP());
-  printf("DEBUG LINE 2\n");
 }
 
-vector<Action> Creature::getValidActions() {
+void Creature::getValidActions(vector<Action> ml) {
   printf("DEBUG LINE 3\n");
-  vector<Action> goodMoves;
-  goodMoves.resize(5);
   for (int i=0;i<4;i++) {
+    printf("GEARSLOT %i\n",i);
     printf("DEBUG LINE 4\n");
     if (gear[i].isFilled()) {
-      int mpReq = gear[i].getItem().getAction().pullVal(1);
+      Equipment thisGear = gear[i].getItem();
+      Action thisAction = thisGear.getAction();
+      int mpReq = thisAction.pullVal(1);
       int curMP = stats.getCurrentMP();
       printf("MPREQ: %i CURMP: %i\n",mpReq,curMP);
       if (mpReq < curMP) {
         printf("PUSHING BACK VALID MOVE %i\n",i);
-        goodMoves.push_back(gear[i].getItem().getAction());
+        ml.push_back(thisAction);
+        printf("PUSHBACK OK\n");
       }
     }
   }

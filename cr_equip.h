@@ -59,7 +59,7 @@ int Equipment::getSlot() {return slot;}
 Action Equipment::getAction() {return act;}
 void Equipment::setName(string iName) {name=iName;}
 void Equipment::setDesc(string iDesc) {desc=iDesc;}
-void Equipment::setSlot(int iSlot) {slot=iSlot;}
+void Equipment::setSlot(int iSlot) {if (slot>=0&&slot<4) {slot=iSlot;}}
 void Equipment::setAction(Action iAct) {act=iAct;}
 
 ///////////////////////////////////////////////////
