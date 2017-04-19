@@ -54,6 +54,15 @@ int main() {
   //begin fight with player and enemy 1
   //if we return the living player, then move onto encounter 2. otherwise, just break
   Creature enemy1("Good Knight");
+  enemy1.statBot(true);
+  enemy1.setHuman(false);
+    //Action esAct;
+    //esAct.setAName("Big Swing");
+    //esAct.setADesc("The user performs a large slice. Costs 20 mana to use and deals 20 damage. 75% chance to hit.\n");
+    //esAct.pushVal(1,20);
+    //Equipment enemySword("Big Sword","A huge sword.",0,esAct);
+    //enemy1.gear[0].setItem(enemySword);
+  enemy1.stats.setCurrentHP(-1);
   Encounter enc1(player,enemy1);
   Creature winner = enc1.Battle();
   if (winner.isHuman()) {

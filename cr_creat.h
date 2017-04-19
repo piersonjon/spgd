@@ -41,7 +41,7 @@ public:
   void setHuman(bool tru);
   void generate();
   void statBot(bool melee);
-  void getValidActions(vector<Action> ml);
+  vector<Action> getValidActions();
 };
 
 Creature::Creature() {name="Empty";empty=true;}
@@ -227,52 +227,97 @@ void Creature::generate() {
     }
     else {printf("That's not a valid option to choose.\n");i--;}
   }
-
-  printf("\nVery good. Now all that's left is to choose your starting gear.\nFirst comes your weapon.\n\n");
-  printf("1) A sword, designed for the strong.\n2) A wand, designed for the wise.\n\nWhat will you choose? ");
-  tmp = -1;
-  tmp = tools.getVal();
-  Equipment startWep;
-  Action startAct;
-  switch(tmp) {
-    case 1:
-      startWep.setName("Shining Steel Sword");
-      startWep.setDesc("A mighty, double-edged sword that shines in the daylight.");
-      startWep.setSlot(1);
-      startAct.setAName("Shining Swing");
-      startAct.setADesc("THe wielder swings the sword with ferocity.");
-    case 2:
-      startWep.setName("Wooden Crystal Staff");
-      startWep.setDesc("A slender, elegant greatstaff topped with a crystal radiating power.");
-      startWep.setSlot(1);
-      startAct.setAName("Mana Bolt");
-      startAct.setADesc("The user blasts the enemy with a bolt of pure Mana.");
-    break;
-  }
   stats.setMaxHP((2*stats.getDEF()) + (4*stats.getSTR()));
   stats.setCurrentHP(stats.getMaxHP());
   stats.setMaxMP((2*stats.getRES()) + (4*stats.getWIS()));
   stats.setCurrentMP(stats.getMaxMP());
+  printf("\nVery good. Now all that's left is to choose your starting gear.\nFirst comes your weapon.\n\n");
+  printf("1) A sword, designed for the strong.\n2) A wand, designed for the wise.\n\nWhat will you choose? ");
+  tmp = -1;
+  while (tmp > 2 || tmp < 1) {
+    tmp = tools.getVal();
+  }
+  Equipment startWep;
+  Action startWepAct;
+  startWepAct.pushVal(1,15);
+  startWepAct.pushVal(2,80);
+  switch(tmp) {
+    case 1:
+      printf("Very well, the sword is yours. ");
+      startWep.setName("Shining Steel Sword");
+      startWep.setDesc("A mighty, double-edged sword that shines in the daylight.");
+      startWep.setSlot(0);
+      startWepAct.setAName("Shining Swing");
+      startWepAct.setADesc("The wielder swings the sword with ferocity.\nDeals (15 + STR) damage with 80% accuracy. Requires 15 mana.");
+      startWepAct.pushVal(0,1);
+      startWep.setAction(startWepAct);
+      gear[0].setItem(startWep);
+      break;
+    case 2:
+      printf("Very well, the staff is yours. ");
+      startWep.setName("Wooden Crystal Staff");
+      startWep.setDesc("A slender, elegant greatstaff topped with a crystal radiating power.");
+      startWep.setSlot(0);
+      startWepAct.setAName("Mana Bolt");
+      startWepAct.setADesc("The user blasts the enemy with a bolt of pure Mana.\nDeals (15 + WIS) damage with 80% accuracy. Requires 15 mana.");
+      startWepAct.pushVal(0,2);
+      startWep.setAction(startWepAct);
+      gear[0].setItem(startWep);
+      break;
+  }
+  printf("Now, all that remains to be chosen is your special gift.\n\n");
+  printf("1) A gauntlet that steals the vitae of your foes.\n2) A ring that fills you with mana.\n\nWhich would you like? ");
+  Equipment startAcc;
+  Action startAccAct;
+
+  startAccAct.pushVal(2,80);
+  tmp = -1;
+  while (tmp > 2 || tmp < 1) {
+    tmp = tools.getVal();
+  }
+  switch(tmp) {
+    case 1:
+      printf("Very well, the gauntlet is yours.\n\n");
+      startAcc.setName("Bloodthirsty Gauntlet");
+      startAcc.setDesc("A bladed steel gauntlet that seems to drink the blood of foes.");
+      startAcc.setSlot(2);
+      startAccAct.setAName("Jagged Draw");
+      startAccAct.setADesc("The wielder claws at the victim, soaking up the blood.\nDeals 15% of current health as damage with 85% accuracy. Heals the user for the damage dealt. Requires 50 mana.");
+      startAccAct.pushVal(0,3);
+      startAccAct.pushVal(1,50);
+      startAcc.setAction(startAccAct);
+      gear[2].setItem(startAcc);
+      break;
+    case 2:
+      printf("Very well, the ring is yours.\n\n");
+      startAcc.setName("Lunar Attunement Ring");
+      startAcc.setDesc("A dark moonstone band that allows the wielder to feel the elements.");
+      startAcc.setSlot(2);
+      startAccAct.setAName("Mana Tide");
+      startAccAct.setADesc("The user concentrates on the powers within the ring.\nRestores 25% of maximum mana.");
+      startAccAct.pushVal(1,0);
+      startAccAct.pushVal(0,4);
+      startAcc.setAction(startAccAct);
+      gear[2].setItem(startAcc);
+      break;
+  }
+
 }
 
-void Creature::getValidActions(vector<Action> ml) {
-  printf("DEBUG LINE 3\n");
+vector<Action> Creature::getValidActions() {
+  vector<Action> ml;
   for (int i=0;i<4;i++) {
-    printf("GEARSLOT %i\n",i);
-    printf("DEBUG LINE 4\n");
     if (gear[i].isFilled()) {
       Equipment thisGear = gear[i].getItem();
       Action thisAction = thisGear.getAction();
       int mpReq = thisAction.pullVal(1);
       int curMP = stats.getCurrentMP();
-      printf("MPREQ: %i CURMP: %i\n",mpReq,curMP);
       if (mpReq < curMP) {
-        printf("PUSHING BACK VALID MOVE %i\n",i);
         ml.push_back(thisAction);
-        printf("PUSHBACK OK\n");
       }
     }
   }
+  return ml;
 }
 
 #endif

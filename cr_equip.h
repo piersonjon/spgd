@@ -9,13 +9,9 @@
 #define __CR_EQUIP_H_INCLUDED__
 
 ///////////////////////////////////////////////////
-// forward class declarations
-class Creature;
-
-///////////////////////////////////////////////////
 // include dependencies
 #include <string>
-#include "cr_equip.h"
+#include "cr_creat.h"
 #include "cr_act.h"
 using namespace std;
 
