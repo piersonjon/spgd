@@ -12,6 +12,7 @@
 #include "cr_equip.h"
 #include "cr_stat.h"
 #include "cr_misc.h"
+#include "cr_bttl.h"
 
 using namespace std;
 const bool DEBUG=false;  // enable & disable as needed for testing.
@@ -74,6 +75,10 @@ int main() {
   demo.generate(true);
   //setup enemy for encounter 1
   //begin fight with player and enemy 1
-  //if we return the living player, then move onto encounter 2. otherwise, just break.
+  //if we return the living player, then move onto encounter 2. otherwise, just break
+  Creature enemy1("Good Knight");
+  demo.setHuman(true);
+  Encounter enc1(demo,enemy1);
+  Creature winner = enc1.Battle();
   return 0;
 }

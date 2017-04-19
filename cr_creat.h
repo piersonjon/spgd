@@ -38,7 +38,9 @@ public:
   void emptyCreature();
   bool isEmpty();
   bool isHuman();
+  void setHuman(bool tru);
   void generate(bool isPlayer);
+  void statBot(bool melee);
   vector<Action> getValidActions();
 };
 
@@ -48,6 +50,7 @@ string Creature::getName() {return name;}
 void Creature::setName(string iName) {name = iName;}
 Stat Creature::getStats() {return stats;}
 void Creature::setStats(Stat iStats) {stats = iStats;}
+void Creature::setHuman(bool tru) {isPlayer = tru;}
 Equipment Creature::getGear(int slot) {
   if (slot<1||slot>4) {
     if (tools.isDEBUG()) {printf("SETGEAR) cannot get gear for invalid slot %i\n",slot);}
@@ -67,6 +70,47 @@ void Creature::setGear(int slot, Equipment iEquip) {
 void Creature::emptyCreature() {name="Empty";empty=true;}
 bool Creature::isEmpty() {return empty;}
 bool Creature::isHuman() {return isPlayer;}
+
+void Creature::statBot(bool melee) {
+  int dice[7];
+  for (int i=0;i<7;i++) {
+    dice[i] = tools.rd() + tools.rd() + tools.rd();
+  }
+  for(int k=0;k<7;k++) {				// we need to run this as many times as we have values in our array
+  	for (int i=0;i<6;i++) {	// for every value in the array (stopping one short of the end)...
+  		if (dice[i] < dice[i+1]) {		// if the value is greater than the one on the right...
+        int tmp = dice[i];
+        dice[i] = dice[i+1];
+        dice[i+1] = tmp;
+      }
+    }
+  }
+  if (melee) {
+    stats.setSTR(dice[1]);
+    stats.setDEF(dice[2]);
+    stats.setRES(dice[3]);
+    stats.setWIS(dice[4]);
+    stats.setSPD(dice[5]);
+    stats.setLCK(dice[6]);
+    stats.setMaxHP((4 * dice[1]) + (2 * dice[2]));
+    stats.setCurrentHP((4 * dice[1]) + (2 * dice[2]));
+    stats.setMaxMP((4 * dice[4]) + (2 * dice[3]));
+    stats.setCurrentMP((4 * dice[4]) + (2 * dice[3]));
+  }
+  else {
+    stats.setWIS(dice[1]);
+    stats.setRES(dice[2]);
+    stats.setDEF(dice[3]);
+    stats.setSTR(dice[4]);
+    stats.setSPD(dice[5]);
+    stats.setLCK(dice[6]);
+    stats.setMaxHP((4 * dice[4]) + (2 * dice[3]));
+    stats.setCurrentHP((4 * dice[4]) + (2 * dice[3]));
+    stats.setMaxMP((4 * dice[1]) + (2 * dice[2]));
+    stats.setCurrentMP((4 * dice[1]) + (2 * dice[2]));
+  }
+}
+
 void Creature::generate(bool isPlayer) {
   int tmp = 0;
   string tmpName = "";
@@ -190,21 +234,33 @@ void Creature::generate(bool isPlayer) {
   switch(tmp) {
     case 1:
     Equipment startWep;
+    case 2:
+    Equipment startWep;
     break;
   }
+  printf("DEBUG LINE 1\n");
 
   stats.setMaxHP((2*stats.getDEF()) + (4*stats.getSTR()));
   stats.setCurrentHP(stats.getMaxHP());
   stats.setMaxMP((2*stats.getRES()) + (4*stats.getWIS()));
   stats.setCurrentMP(stats.getMaxMP());
+  printf("DEBUG LINE 2\n");
 }
 
 vector<Action> Creature::getValidActions() {
+  printf("DEBUG LINE 3\n");
   vector<Action> goodMoves;
+  goodMoves.resize(5);
   for (int i=0;i<4;i++) {
+    printf("DEBUG LINE 4\n");
     if (gear[i].isFilled()) {
-      if (gear[i].getItem().getAction().pullVal(1) > stats.getCurrentMP())
-      goodMoves.push_back(gear[i].getItem().getAction());
+      int mpReq = gear[i].getItem().getAction().pullVal(1);
+      int curMP = stats.getCurrentMP();
+      printf("MPREQ: %i CURMP: %i\n",mpReq,curMP);
+      if (mpReq < curMP) {
+        printf("PUSHING BACK VALID MOVE %i\n",i);
+        goodMoves.push_back(gear[i].getItem().getAction());
+      }
     }
   }
 }

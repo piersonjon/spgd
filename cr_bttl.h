@@ -22,12 +22,22 @@ using namespace std;
 class Turn {
 
 public:
-  Turn (Character actor, Character target);
+  Turn (Creature actor, Creature target);
 };
 
-Turn::Turn(Character actor, Character target) {
-  if (actor.isPlayer()) {
+Turn::Turn(Creature actor, Creature target) {
+  printf("DEBUG: TICK\n");
+  if (actor.isHuman()) {
     //get list of moves and display them, prompting the user for a choice.
+    vector<Action> possibleMoves;
+    possibleMoves.resize(4);
+    possibleMoves = actor.getValidActions();
+  }
+  else {
+    printf("enemy turn, human lose 20hp\n");
+    target.stats.setCurrentHP(target.stats.getCurrentHP() - 20);
+    cout << "current hp: " << target.stats.getCurrentHP() << "\n";
+    // get the list of valid actions and pick one at random.
   }
 }
 
@@ -35,7 +45,7 @@ Turn::Turn(Character actor, Character target) {
 // class: Encounter
 class Encounter {
   Creature player;
-  Creatuyre enemy;
+  Creature enemy;
 public:
   Encounter(Creature plr, Creature nmy);
   Creature Battle();
@@ -48,8 +58,8 @@ Encounter::Encounter(Creature plr, Creature nmy) {
 
 Creature Encounter::Battle() {
   cout << "Battle between " << player.getName() << " and " << enemy.getName() << " has begun!\n";
-  while (player.getCurrentHP() > 0 || enemy.getCurrentHP() > 0) {
-    if (player.getSPD() > enemy.getSPD()) {
+  while (player.stats.getCurrentHP() > 0 && enemy.stats.getCurrentHP() > 0) {
+    if (player.stats.getSPD() > enemy.stats.getSPD()) {
       Turn (player, enemy);
       Turn (enemy, player);
     }
@@ -59,12 +69,12 @@ Creature Encounter::Battle() {
     }
 
   }
-  if (player.getCurrentHP() <= 0) {
-    cout << player.getName() << " has perished in combat! "
+  if (player.stats.getCurrentHP() <= 0) {
+    cout << player.getName() << " has perished in combat! ";
     return enemy;
   }
   else {
-    cout << enemy.getName() << " has perished in combat! "
+    cout << enemy.getName() << " has perished in combat! ";
     return player;
   }
 }
